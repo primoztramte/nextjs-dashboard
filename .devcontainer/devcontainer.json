@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+  "name": "Node.js & TypeScript",
+  // "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "steoates.autoimport",
+        "naumovs.color-highlight",
+        "shd101wyy.markdown-preview-enhanced",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
+        "esbenp.prettier-vscode",
+        "burkeholland.simple-react-snippets",
+        "bradlc.vscode-tailwindcss",
+        "styled-components.vscode-styled-components"
+      ]
+    }
+  },
+  "postCreateCommand": "docker start next-js-dashboard-db || docker run --name next-js-dashboard-db --network localhost -e POSTGRES_PASSWORD=wadehadedudeda -p 5432:5432 -d postgres"
+}

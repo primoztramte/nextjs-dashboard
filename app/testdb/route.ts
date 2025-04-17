@@ -8,6 +8,7 @@ async function getData() {
 
 export async function GET() {
   try {
+    console.log(process.env.DATABASE_URL);
     const data = await getData();
 
     return Response.json({ message: "Success" });
