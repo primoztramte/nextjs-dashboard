@@ -24,5 +24,5 @@
       ]
     }
   },
-  "postCreateCommand": "until docker info > /dev/null 2>&1; do sleep 1; done && (docker start next-js-dashboard-db || docker run --name next-js-dashboard-db --network bridge -e POSTGRES_PASSWORD=wadehadedudeda -p 5432:5432 -d postgres)"
+  "postStartCommand": "until docker info > /dev/null 2>&1; do sleep 1; done && (docker start next-js-dashboard-db || docker run --name next-js-dashboard-db --network bridge -e POSTGRES_PASSWORD=wadehadedudeda -p 5432:5432 -d postgres)"
 }
