@@ -4,6 +4,7 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
+  LatestInvoice,
   LatestInvoiceRaw,
   Revenue,
 } from "./definitions";
@@ -15,7 +16,7 @@ const sql = postgres(process.env.DATABASE_URL!, {
   ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
-export async function fetchRevenue() {
+export async function fetchRevenue(): Promise<Revenue[]> {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -34,7 +35,7 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
   try {
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
