@@ -2,10 +2,8 @@ import postgres from "postgres";
 import {
   CustomerField,
   CustomersTableType,
-  FormattedCustomersTable,
   InvoiceForm,
   InvoicesTable,
-  LatestInvoice,
   LatestInvoiceRaw,
   Revenue,
 } from "./definitions";
@@ -17,7 +15,7 @@ const sql = postgres(process.env.DATABASE_URL!, {
   ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
-export async function fetchRevenue(): Promise<Revenue[]> {
+export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -32,11 +30,11 @@ export async function fetchRevenue(): Promise<Revenue[]> {
     return data;
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    throw new Error("Failed to fetch revenue data.");
   }
 }
 
-export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
+export async function fetchLatestInvoices() {
   try {
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
@@ -52,7 +50,7 @@ export async function fetchLatestInvoices(): Promise<LatestInvoice[]> {
     return latestInvoices;
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    throw new Error("Failed to fetch the latest invoices.");
   }
 }
 
@@ -87,7 +85,7 @@ export async function fetchCardData() {
     };
   } catch (error) {
     console.error("Database Error:", error);
-    return {};
+    throw new Error("Failed to fetch card data.");
   }
 }
 
@@ -123,7 +121,7 @@ export async function fetchFilteredInvoices(
     return invoices;
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    throw new Error("Failed to fetch invoices.");
   }
 }
 
@@ -144,7 +142,7 @@ export async function fetchInvoicesPages(query: string) {
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    throw new Error("Failed to fetch total number of invoices.");
   }
 }
 
@@ -169,16 +167,11 @@ export async function fetchInvoiceById(id: string) {
     return invoice[0];
   } catch (error) {
     console.error("Database Error:", error);
-    return {
-      id: "",
-      customer_id: "",
-      amount: 0,
-      status: "",
-    };
+    throw new Error("Failed to fetch invoice.");
   }
 }
 
-export async function fetchCustomers(): Promise<CustomerField[]> {
+export async function fetchCustomers() {
   try {
     const customers = await sql<CustomerField[]>`
       SELECT
@@ -191,13 +184,11 @@ export async function fetchCustomers(): Promise<CustomerField[]> {
     return customers;
   } catch (err) {
     console.error("Database Error:", err);
-    return [];
+    throw new Error("Failed to fetch all customers.");
   }
 }
 
-export async function fetchFilteredCustomers(
-  query: string
-): Promise<FormattedCustomersTable[]> {
+export async function fetchFilteredCustomers(query: string) {
   try {
     const data = await sql<CustomersTableType[]>`
 		SELECT
@@ -226,6 +217,6 @@ export async function fetchFilteredCustomers(
     return customers;
   } catch (err) {
     console.error("Database Error:", err);
-    return [];
+    throw new Error("Failed to fetch customer table.");
   }
 }
