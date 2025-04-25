@@ -7,7 +7,11 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
-const sql = postgres(process.env.DATABASE_URL!);
+const isProduction = process.env.NODE_ENV === "production";
+
+const sql = postgres(process.env.DATABASE_URL!, {
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
 
 const FormSchema = z.object({
   id: z.string(),

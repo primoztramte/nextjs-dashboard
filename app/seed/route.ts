@@ -2,7 +2,11 @@ import bcrypt from "bcryptjs";
 import postgres from "postgres";
 import { invoices, customers, revenue, users } from "../lib/placeholder-data";
 
-const sql = postgres(process.env.DATABASE_URL!);
+const isProduction = process.env.NODE_ENV === "production";
+
+const sql = postgres(process.env.DATABASE_URL!, {
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
 
 async function seedUsers() {
   await sql`

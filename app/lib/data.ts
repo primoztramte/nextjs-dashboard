@@ -9,7 +9,11 @@ import {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 
-const sql = postgres(process.env.DATABASE_URL!);
+const isProduction = process.env.NODE_ENV === "production";
+
+const sql = postgres(process.env.DATABASE_URL!, {
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
 
 export async function fetchRevenue() {
   try {
