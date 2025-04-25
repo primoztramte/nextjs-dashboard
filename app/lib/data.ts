@@ -2,6 +2,7 @@ import postgres from "postgres";
 import {
   CustomerField,
   CustomersTableType,
+  FormattedCustomersTable,
   InvoiceForm,
   InvoicesTable,
   LatestInvoice,
@@ -86,7 +87,7 @@ export async function fetchCardData() {
     };
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    return {};
   }
 }
 
@@ -168,11 +169,16 @@ export async function fetchInvoiceById(id: string) {
     return invoice[0];
   } catch (error) {
     console.error("Database Error:", error);
-    return [];
+    return {
+      id: "",
+      customer_id: "",
+      amount: 0,
+      status: "",
+    };
   }
 }
 
-export async function fetchCustomers() {
+export async function fetchCustomers(): Promise<CustomerField[]> {
   try {
     const customers = await sql<CustomerField[]>`
       SELECT
@@ -189,7 +195,9 @@ export async function fetchCustomers() {
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
+export async function fetchFilteredCustomers(
+  query: string
+): Promise<FormattedCustomersTable[]> {
   try {
     const data = await sql<CustomersTableType[]>`
 		SELECT
